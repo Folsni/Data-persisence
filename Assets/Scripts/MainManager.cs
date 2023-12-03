@@ -1,27 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
+    public static MainManager Instance;
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
-    
+
+    public string playerName;
+    public int newHighScore;
+    public string newHighScoreName;
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    
+
+
     // Start is called before the first frame update
     void Start()
     {
+        BestScoreText.text = "Best Score: " + Data.Instance.newHighScoreName + " : " + Data.Instance.newHighScore;
+        playerName = Data.Instance.playerName;
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -57,7 +66,9 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                NewBestScore();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                
             }
         }
     }
@@ -73,4 +84,14 @@ public class MainManager : MonoBehaviour
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
+    public void NewBestScore()
+    {
+        if ( m_Points > Data.Instance.newHighScore)
+        {
+            Data.Instance.newHighScore = m_Points;
+            Data.Instance.newHighScoreName = playerName;
+            Data.Instance.SaveNewbBestScore();
+        }
+    }
+
 }
